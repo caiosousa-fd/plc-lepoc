@@ -34,6 +34,14 @@ channels:
           { "$ref": "#/components/messages/UpdateSportCompetitionThresholds" }
         ]
 
+  parlay_liability_global_thresholds:
+    description: The topic to update global thresholds for sports and competitions
+    subscribe:
+      summary: Consume updates about overrides for sports and competitions
+      operationId: sportId
+      message:
+        "$ref": "#/components/messages/UpdateSportCompetitionThresholds"
+
 components:
   messages:
     ParlayLiabilityChanged:
