@@ -47,6 +47,7 @@ components:
       title: Update Default Thresholds
       payload:
         $ref: '#/components/schemas/UpdateDefaultThresholdsPayload'
+
     UpdateSportCompetitionThresholds:
       name: updateSportCompetitionThresholds
       title: Update Sport and Competitions thresholds
@@ -167,7 +168,7 @@ components:
         sportId:
           type: string
           description: Sport Id for thresholds for sport and the respective competitions, in order to updates in default thresholds be published to the same partition
-        potentialWinningsThresholds:
+        sportPotentialWinningsThresholds:
           $ref: '#/components/schemas/PotentialWinningsThreshold'
         competitions:
           type: array
@@ -175,7 +176,7 @@ components:
             sportId:
               type: string
               description: Competition Id
-            potentialWinningsThresholds:
+            competitionPotentialWinningsThresholds:
               $ref: '#/components/schemas/PotentialWinningsThreshold'
 
     PotentialWinningsThreshold:
