@@ -74,13 +74,9 @@ components:
           description: Message related to thresholds fo a given type
         level:
           $ref: '#/components/schemas/LiabilityLevel'
-        remainingParlayPotentialWin:
+        cumulativeParlayPotentialWin:
           type: integer
           minimum: 0
-          description: The remaining potential winning for this parlay
-        balance:
-          type: integer
-          exclusiveMinimum: 0
           description: the cumulative potential winning for this parlay
         metadata:
           $ref: '#/components/schemas/metadata'
