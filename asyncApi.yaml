@@ -173,7 +173,7 @@ components:
         competitions:
           type: array
           properties:
-            sportId:
+            competitionId:
               type: string
               description: Competition Id
             competitionPotentialWinningsThresholds:
