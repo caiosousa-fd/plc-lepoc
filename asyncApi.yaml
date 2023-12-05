@@ -1,0 +1,192 @@
+asyncapi: '2.6.0'
+info:
+  title: Parlay Liability Calculator
+  version: '1.0.0'
+  description: |
+    The Parlay Liability Calculator may suspend bets for a given parlay, based on their cumulative liability.
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+
+servers:
+  dev:
+    url: use1-betting-backbone01.dev.fndlsb.net:9092
+    protocol: kafka
+    description: The liability stream for the dev environment
+
+  prd:
+    url: use1-betting-backbone01.prd.fndlsb.net:9092
+    protocol: kafka
+    description: The liability stream for the prd environment
+
+defaultContentType: protobuf
+
+channels:
+  parlay_liability_calculator_outbox:
+    description: The topic to update the current liabilities for given parlay, default and global thresholds
+    publish:
+      summary: Inform about the new bets liability threshold for a given parlay, default and global thresholds
+      operationId: parlayId, defaultThreshold or sportId
+      message:
+        oneOf: [
+          { "$ref": "#/components/messages/ParlayLiabilityChanged" },
+          { "$ref": "#/components/messages/UpdateDefaultThresholds" },
+          { "$ref": "#/components/messages/UpdateSportCompetitionThresholds" }
+        ]
+
+components:
+  messages:
+    ParlayLiabilityChanged:
+      name: parlayLiabilityChanged
+      title: Parlay liability changed
+      payload:
+        $ref: '#/components/schemas/ParlayLiabilityChangedPayload'
+
+    UpdateDefaultThresholds:
+      name: updateDefaultThresholds
+      title: Update Default Thresholds
+      payload:
+        $ref: '#/components/schemas/UpdateDefaultThresholdsPayload'
+    UpdateSportCompetitionThresholds:
+      name: updateSportCompetitionThresholds
+      title: Update Sport and Competitions thresholds
+      payload:
+        $ref: '#/components/schemas/UpdateSportCompetitionThresholdsPayload'
+
+  schemas:
+    ParlayLiabilityChangedPayload:
+      type: object
+      properties:
+        id:
+          type: string
+          description: This ID will be formed by the parlay ID
+        type:
+          type: string
+          description: Message related to thresholds fo a given type
+        level:
+          $ref: '#/components/schemas/LiabilityLevel'
+        remainingParlayPotentialWin:
+          type: integer
+          minimum: 0
+          description: The remaining potential winning for this parlay
+        balance:
+          type: integer
+          exclusiveMinimum: 0
+          description: the cumulative potential winning for this parlay
+        metadata:
+          $ref: '#/components/schemas/metadata'
+
+    UpdateDefaultThresholdsPayload:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Mocked id for default thresholds, in order to updates in default thresholds be published to the same partition
+        potentialWinningsThresholds:
+          $ref: '#/components/schemas/PotentialWinningsThreshold'
+
+    UpdateSportCompetitionThresholdsPayload:
+      $ref: '#/components/schemas/SportCompetitionsThresholds'
+
+    LiabilityLevel:
+      type: string
+      description: the liability flag for this parlay
+      enum:
+        - NONE
+        - ALERT
+        - SUSPEND
+
+    metadata:
+      type: object
+      properties:
+        appliedSuspensionThreshold:
+          type: integer
+          exclusiveMinimum: 0
+          description: The liability suspension threshold considered for the parlay
+        appliedAlertThreshold:
+          type: integer
+          exclusiveMinimum: 0
+          description: The liability alert threshold considered for the parlay
+        appliedTarget:
+          $ref: '#/components/schemas/AppliedTarget'
+        appliedTargetId:
+          type: string
+          description: The liability thresholds applied target id
+        bets:
+          $ref: '#/components/schemas/Bets'
+        legs:
+          $ref: '#/components/schemas/Legs'
+
+    AppliedTarget:
+      type: string
+      description: the liability applied target for this parlay
+      enum:
+        - SPORT
+        - COMPETITION
+
+    Bets:
+      type: array
+      properties:
+        betId:
+          type: integer
+          exclusiveMinimum: 0
+          description: the bet id
+        productId:
+          type: integer
+          exclusiveMinimum: 0
+          description: the betting-state in which the bet was made.
+
+    Legs:
+      type: array
+      minimum: 2
+      maximum: 25
+      properties:
+        selectionInfo:
+          $ref: '#/components/schemas/Entity'
+        marketInfo:
+          $ref: '#/components/schemas/Entity'
+        sportInfo:
+          $ref: '#/components/schemas/Entity'
+        competitionInfo:
+          $ref: '#/components/schemas/Entity'
+
+    Entity:
+      type: object
+      properties:
+        name:
+          type: string
+          description: entity name
+        rampId:
+          type: integer
+          description: entity ramp id
+          exclusiveMinimum: 0
+
+    SportCompetitionsThresholds:
+      type: object
+      properties:
+        sportId:
+          type: string
+          description: Sport Id for thresholds for sport and the respective competitions, in order to updates in default thresholds be published to the same partition
+        potentialWinningsThresholds:
+          $ref: '#/components/schemas/PotentialWinningsThreshold'
+        competitions:
+          type: array
+          properties:
+            sportId:
+              type: string
+              description: Competition Id
+            potentialWinningsThresholds:
+              $ref: '#/components/schemas/PotentialWinningsThreshold'
+
+    PotentialWinningsThreshold:
+      type: object
+      properties:
+        potentialWinningsAlertThreshold:
+          type: integer
+          description: Potential Winnings Alert Threshold
+          exclusiveMinimum: 0
+        potentialWinningsSuspensionThreshold:
+          type: integer
+          description: Potential Winnings Suspension Threshold
+          exclusiveMinimum: 0
+
