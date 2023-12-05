@@ -30,8 +30,7 @@ channels:
       message:
         oneOf: [
           { "$ref": "#/components/messages/ParlayLiabilityChanged" },
-          { "$ref": "#/components/messages/UpdateDefaultThresholds" },
-          { "$ref": "#/components/messages/UpdateSportCompetitionThresholds" }
+          { "$ref": "#/components/messages/UpdateDefaultThresholds" }
         ]
 
   parlay_liability_global_thresholds:
@@ -78,8 +77,10 @@ components:
           type: integer
           minimum: 0
           description: the cumulative potential winning for this parlay
-        metadata:
-          $ref: '#/components/schemas/metadata'
+        potentialSuspensionThreshold:
+          $ref: '#/components/schemas/PotentialWinningsThreshold'
+        legs:
+          $ref: '#/components/schemas/Legs'
 
     UpdateDefaultThresholdsPayload:
       type: object
@@ -101,46 +102,6 @@ components:
         - ALERT
         - SUSPEND
 
-    metadata:
-      type: object
-      properties:
-        appliedSuspensionThreshold:
-          type: integer
-          exclusiveMinimum: 0
-          description: The liability suspension threshold considered for the parlay
-        appliedAlertThreshold:
-          type: integer
-          exclusiveMinimum: 0
-          description: The liability alert threshold considered for the parlay
-        appliedTarget:
-          $ref: '#/components/schemas/AppliedTarget'
-        appliedTargetId:
-          type: string
-          description: The liability thresholds applied target id
-        bets:
-          $ref: '#/components/schemas/Bets'
-        legs:
-          $ref: '#/components/schemas/Legs'
-
-    AppliedTarget:
-      type: string
-      description: the liability applied target for this parlay
-      enum:
-        - SPORT
-        - COMPETITION
-
-    Bets:
-      type: array
-      properties:
-        betId:
-          type: integer
-          exclusiveMinimum: 0
-          description: the bet id
-        productId:
-          type: integer
-          exclusiveMinimum: 0
-          description: the betting-state in which the bet was made.
-
     Legs:
       type: array
       minimum: 2
@@ -153,6 +114,8 @@ components:
         sportInfo:
           $ref: '#/components/schemas/Entity'
         competitionInfo:
+          $ref: '#/components/schemas/Entity'
+        eventInfo:
           $ref: '#/components/schemas/Entity'
 
     Entity:
