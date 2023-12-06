@@ -26,20 +26,28 @@ channels:
     description: The topic to update the current liabilities for given parlay, default and global thresholds
     publish:
       summary: Inform about the new bets liability threshold for a given parlay, default and global thresholds
-      operationId: parlayId, defaultThreshold or sportId
+      operationId: parlayId
       message:
-        oneOf: [
-          { "$ref": "#/components/messages/ParlayLiabilityChanged" },
-          { "$ref": "#/components/messages/UpdateDefaultThresholds" }
-        ]
+        { "$ref": "#/components/messages/ParlayLiabilityChanged" }
 
   parlay_liability_global_thresholds:
     description: The topic to update global thresholds for sports and competitions
     subscribe:
       summary: Consume updates about overrides for sports and competitions
-      operationId: sportId
+      operationId: sportId or defaultThreshold
       message:
-        "$ref": "#/components/messages/UpdateSportCompetitionThresholds"
+        oneOf: [
+          { "$ref": "#/components/messages/UpdateSportCompetitionThresholds" },
+          { "$ref": "#/components/messages/UpdateDefaultThresholds" }
+        ]
+
+  parlay_liability_calculator_inbox:
+    description: The topic that receives updates about a given parlay
+    subscribe:
+      summary: Consume information about the liability for a given parlay
+      operationId: ParlayId
+      message:
+        { "$ref": "#/components/messages/UpdateParlaySportCompetitionThresholds" }
 
 components:
   messages:
@@ -61,11 +69,17 @@ components:
       payload:
         $ref: '#/components/schemas/UpdateSportCompetitionThresholdsPayload'
 
+    UpdateParlaySportCompetitionThresholds:
+      name: updateParlaySportCompetitionThresholds
+      title: Update Parlay Sport Competition Thresholds
+      payload:
+        $ref: '#/components/schemas/UpdateParlaySportCompetitionThresholdsPayload'
+
   schemas:
     ParlayLiabilityChangedPayload:
       type: object
       properties:
-        id:
+        parlayId:
           type: string
           description: This ID will be formed by the parlay ID
         type:
@@ -93,6 +107,15 @@ components:
 
     UpdateSportCompetitionThresholdsPayload:
       $ref: '#/components/schemas/SportCompetitionsThresholds'
+
+    UpdateParlaySportCompetitionThresholdsPayload:
+      type: object
+      properties:
+        parlay:
+          type: string
+          description: This ID will be formed by the parlay ID
+        potentialWinningsThresholds:
+          $ref: '#/components/schemas/PotentialWinningsThreshold'
 
     LiabilityLevel:
       type: string
