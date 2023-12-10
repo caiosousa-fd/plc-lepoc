@@ -22,7 +22,7 @@ servers:
 defaultContentType: protobuf
 
 channels:
-  parlay_liability_calculator_outbox:
+  parlay_liabilities_stream:
     description: The topic to update the current liabilities for given parlay, default and global thresholds
     publish:
       summary: Inform about the new bets liability threshold for a given parlay, default and global thresholds
