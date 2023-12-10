@@ -82,9 +82,6 @@ components:
         parlayId:
           type: string
           description: This ID will be formed by the parlay ID
-        type:
-          type: string
-          description: Message related to thresholds fo a given type
         level:
           $ref: '#/components/schemas/LiabilityLevel'
         cumulativeParlayPotentialWin:
@@ -111,7 +108,7 @@ components:
     UpdateParlaySportCompetitionThresholdsPayload:
       type: object
       properties:
-        parlay:
+        parlayId:
           type: string
           description: This ID will be formed by the parlay ID
         potentialWinningsThresholds:
@@ -158,7 +155,7 @@ components:
         sportId:
           type: string
           description: Sport Id for thresholds for sport and the respective competitions, in order to updates in default thresholds be published to the same partition
-        sportPotentialWinningsThresholds:
+        potentialWinningsThresholds:
           $ref: '#/components/schemas/PotentialWinningsThreshold'
         competitions:
           type: array
@@ -166,7 +163,7 @@ components:
             competitionId:
               type: string
               description: Competition Id
-            competitionPotentialWinningsThresholds:
+            potentialWinningsThresholds:
               $ref: '#/components/schemas/PotentialWinningsThreshold'
 
     PotentialWinningsThreshold:
