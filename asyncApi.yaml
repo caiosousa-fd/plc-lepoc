@@ -87,7 +87,11 @@ components:
         cumulativeParlayPotentialWin:
           type: integer
           minimum: 0
-          description: the cumulative potential winning for this parlay
+          description: The cumulative potential winning for this parlay
+        remainingPotentialWin:
+          type: integer
+          minimum: 0
+          description: The remaining potential winning for this parlay to reach the SUSPEND level
         potentialWinningsThresholds:
           $ref: '#/components/schemas/PotentialWinningsThreshold'
         legs:
