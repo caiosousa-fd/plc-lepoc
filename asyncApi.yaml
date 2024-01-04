@@ -84,6 +84,9 @@ components:
           description: This ID will be formed by the parlay ID
         level:
           $ref: '#/components/schemas/LiabilityLevel'
+        thresholdReached:
+          type: boolean
+          description: Flag that indicates if parlay reached one threshold
         cumulativeParlayPotentialWin:
           type: integer
           minimum: 0
